@@ -1,0 +1,16 @@
+# Emacs
+*~
+*#
+.#*
+.ensime
+.ensime_cache
+TAGS
+.dir-locals.el
+
+# Compiled
+*.elc
+
+# Packaging
+.cask
+
+target/
