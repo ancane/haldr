@@ -72,6 +72,7 @@ object Build extends Build {
 
   lazy val haldr = Project("haldr", file("."))
     .settings(basicSettings: _*)
+    .settings(sonatypeSettings: _*)
     .settings(publishSettings: _*)
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(
