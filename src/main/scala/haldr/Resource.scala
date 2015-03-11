@@ -28,7 +28,7 @@ class Resource private[haldr] (
   }
 
   def link(rel: String, path: Path): Resource = {
-    links += (rel -> LinkUri(path))
+    links += (rel -> LinkUri(Uri.Empty.withPath(path)))
     this
   }
 
@@ -80,16 +80,20 @@ private[haldr] sealed trait LinkObject {
   def props = _props.result
 }
 
-private[haldr] case class LinkUri(path:Path) extends LinkObject {
-  def / (x: String)      = LinkUri(path / x)
-  def / (x: Path)        = LinkUri(path ++ x)
-  def / (x: RelativeUri) = LinkUri(path ++ x.path)
+private[haldr] case class LinkUri(uri:Uri) extends LinkObject {
+  def / (x: String)      = LinkUri(uri.withPath(path = uri.path / x))
+  def / (x: Path)        = LinkUri(uri.withPath(path = uri.path ++ x))
+  def / (x: RelativeUri) = LinkUri(uri.withPath(path = uri.path ++ x.uri.path))
+  def q (x: String)      = LinkUri(uri.withQuery(x))
+  def q (x: (String, String)) = LinkUri(uri.withQuery(x))
 }
 
-private[haldr] case class RelativeUri(path:Path) extends LinkObject {
-  def / (x: String)      = RelativeUri(path / x)
-  def / (x: Path)        = RelativeUri(path ++ x)
-  def / (x: RelativeUri) = RelativeUri(path ++ x.path)
+private[haldr] case class RelativeUri(uri:Uri) extends LinkObject {
+  def / (x: String)      = RelativeUri(uri.withPath(path = uri.path / x))
+  def / (x: Path)        = RelativeUri(uri.withPath(path = uri.path ++ x))
+  def / (x: RelativeUri) = RelativeUri(uri.withPath(path = uri.path ++ x.uri.path))
+  def q (x: String)      = RelativeUri(uri.withQuery(x))
+  def q (x: (String, String)) = RelativeUri(uri.withQuery(x))
 }
 
 private[haldr] case class UriTpl(tpl:String) extends LinkObject

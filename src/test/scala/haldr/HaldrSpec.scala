@@ -61,6 +61,34 @@ class HaldrSpec extends Specification {
         Resource(r"/customers" / r"/deadbeaf").toJson must_== expected
       }
 
+      "URIs with URL params" >> {
+        val expected = """
+        {
+           "_links": {
+              "self": {"href": "/customers/deadbeaf?dead=beaf"}
+            }
+        }
+        """.parseJson
+
+        Resource(r"/customers/deadbeaf"       q ("dead", "beaf")).toJson must_== expected
+        Resource(u"/customers" / r"/deadbeaf" q ("dead", "beaf")).toJson must_== expected
+        Resource(u"/customers" / "deadbeaf"   q ("dead", "beaf")).toJson must_== expected
+        Resource(r"/customers" / "deadbeaf"   q ("dead", "beaf")).toJson must_== expected
+        Resource(r"/customers" / r"/deadbeaf" q ("dead", "beaf")).toJson must_== expected
+      }
+
+      "URIs query param encoding" >> {
+        val expected = """
+        {
+           "_links": {
+              "self": {"href": "/customers/deadbeaf?dead=be+af"}
+            }
+        }
+        """.parseJson
+
+        Resource(r"/customers/deadbeaf" q ("dead", "be af")).toJson must_== expected
+      }
+
       "additional link properties" >> {
         val customer = Resource(u"/customers/deadbeaf".prop("title", "John"))
 
