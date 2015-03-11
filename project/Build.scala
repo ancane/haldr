@@ -22,7 +22,7 @@ object Build extends Build {
     organization := "com.github.ancane",
     name         := "haldr",
     description  := "HAL builder for spray-json",
-    version      := "0.1",
+    version      := "0.2",
     scalaVersion := V.scala,
     crossScalaVersions := V.crossScala,
     scalacOptions := Seq(
