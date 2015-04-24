@@ -10,6 +10,8 @@ libraryDependencies += "com.github.ancane" %% "haldr" % "0.1"
 ```
 
 ```scala
+import spray.json._
+import DefaultJsonProtocol._
 import haldr._
 ```
 
