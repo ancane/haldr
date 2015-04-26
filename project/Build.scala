@@ -80,6 +80,8 @@ object Build extends Build {
       uriTempl8,
       sprayJson,
       sprayHttp,
+      sprayRouting % "test",
+      sprayTestkit % "test",
       specs2 % "test",
       akka % "provided"
     )
@@ -96,6 +98,8 @@ object Deps {
   val uriTempl8 = "no.arktekk"  %% "uri-template"   % "1.0.2"
   val sprayJson = "io.spray"    %% "spray-json"     % "1.3.0"
   val sprayHttp = "io.spray"    %% "spray-http"     % V.spray
+  val sprayRouting = "io.spray" %% "spray-routing"  % V.spray
+  val sprayTestkit = "io.spray" %% "spray-testkit"  % V.spray
   val akka      = "com.typesafe.akka" %% "akka-actor" % "2.3.6"
   val specs2    = "org.specs2"  %% "specs2"         % "2.3.13"
 }
