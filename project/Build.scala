@@ -9,9 +9,8 @@ object ShellPrompt {
 
   val buildShellPrompt = (state: State) => {
     val extracted = Project.extract(state)
-    val currentVersion = (version in ThisBuild get extracted.structure.data).getOrElse("-")
     val currentProject = extracted.currentProject.id
-    s"[$currentProject:$currentVersion][git:$currentBranch]\n> "
+    s"[$currentProject:$currentBranch]\n> "
   }
 }
 
