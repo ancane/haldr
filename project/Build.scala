@@ -2,6 +2,9 @@ import sbt._
 import Keys._
 import xerial.sbt.Sonatype._
 import SonatypeKeys._
+import sbtrelease.ReleasePlugin._
+import ReleaseKeys._
+import com.typesafe.sbt.pgp.PgpKeys
 
 object ShellPrompt {
   def currentBranch = Process(List("git", "rev-parse", "--abbrev-ref", "HEAD"))
@@ -9,8 +12,9 @@ object ShellPrompt {
 
   val buildShellPrompt = (state: State) => {
     val extracted = Project.extract(state)
+    val currentVersion = (version in ThisBuild get extracted.structure.data).getOrElse("-")
     val currentProject = extracted.currentProject.id
-    s"[$currentProject:$currentBranch]\n> "
+    s"[$currentProject:$currentVersion][$currentBranch]\n> "
   }
 }
 
@@ -21,7 +25,6 @@ object Build extends Build {
     organization := "com.github.ancane",
     name         := "haldr",
     description  := "HAL builder for spray-json",
-    version      := "0.2",
     scalaVersion := V.scala,
     crossScalaVersions := V.crossScala,
     scalacOptions := Seq(
@@ -72,6 +75,7 @@ object Build extends Build {
   lazy val haldr = Project("haldr", file("."))
     .settings(basicSettings: _*)
     .settings(sonatypeSettings: _*)
+    .settings(releaseSettings ++ Seq(publishArtifactsAction := PgpKeys.publishSigned.value))
     .settings(publishSettings: _*)
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(
@@ -89,16 +93,17 @@ object Build extends Build {
 
 object Deps {
   object V {
-    val scala = "2.11.2"
-    val spray = "1.3.2"
+    val scala = "2.11.6"
+    val spray = "1.3.3"
     val crossScala = Seq("2.10.4", "2.11.6")
   }
 
   val uriTempl8 = "no.arktekk"  %% "uri-template"   % "1.0.2"
-  val sprayJson = "io.spray"    %% "spray-json"     % "1.3.0"
+  val sprayJson = "io.spray"    %% "spray-json"     % "1.3.1"
+
   val sprayHttp = "io.spray"    %% "spray-http"     % V.spray
   val sprayRouting = "io.spray" %% "spray-routing"  % V.spray
   val sprayTestkit = "io.spray" %% "spray-testkit"  % V.spray
-  val akka      = "com.typesafe.akka" %% "akka-actor" % "2.3.6"
+  val akka      = "com.typesafe.akka" %% "akka-actor" % "2.3.9"
   val specs2    = "org.specs2"  %% "specs2"         % "2.3.13"
 }

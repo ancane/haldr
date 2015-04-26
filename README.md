@@ -6,7 +6,7 @@ HAL resource representations builder for spray-json
 Cross-built for Scala 2.10 and 2.11
 
 ```sbt
-libraryDependencies += "com.github.ancane" %% "haldr" % "0.1"
+libraryDependencies += "com.github.ancane" %% "haldr" % "0.2"
 ```
 
 ```scala
