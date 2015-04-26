@@ -95,7 +95,7 @@ object Deps {
   object V {
     val scala = "2.11.6"
     val spray = "1.3.3"
-    val crossScala = Seq("2.10.4", "2.11.6")
+    val crossScala = Seq("2.10.5", "2.11.6")
   }
 
   val uriTempl8 = "no.arktekk"  %% "uri-template"   % "1.0.2"
