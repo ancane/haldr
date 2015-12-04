@@ -37,6 +37,10 @@ class Resource private[haldr] (
     link(rel, lnk)
   }
 
+  def link[T <: LinkObject](rel: String, lnks: T*): Resource = {
+    lnks.foldLeft(this)((t, lnk) => t.link(rel, lnk))
+  }
+
   def embed(rel: String, x: Resource): Resource = {
     embeds += (rel -> Left(Left(x)))
     this

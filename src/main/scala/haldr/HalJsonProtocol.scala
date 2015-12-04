@@ -46,16 +46,27 @@ private[haldr] trait HalJsonProtocol {
       }
 
       val links: List[(String, JsValue)] = if (self.isEmpty && r.links.isEmpty) Nil
-      else List("_links" -> JsObject(
-        self ++ r.links.result.foldLeft(List[(String, JsValue)]()){ case (acc, lnk) => lnk match {
-          case (rel, x:LinkUri)     => (rel -> formatLink(x.uri, x.props)) :: acc
-          case (rel, x:UriTpl)      => (rel -> formatLink(x.tpl, x.props))  :: acc
-          case (rel, x:UriString)   => (rel -> formatLink(x.str, x.props))  :: acc
-          case (rel, x:RelativeUri) => (rel -> (r.baseUri match {
-            case Some(y:LinkUri) => formatLink(x.uri.withPath(y.uri.path ++ x.uri.path), x.props)
-            case _               => formatLink(x.uri, x.props)
-          })) :: acc
-        }}))
+      else {
+        def linksArrayToJsValue(rel: String, links: List[LinkObject]): JsValue = {
+          JsArray(links.map(singleLinkToJsValue): _*)
+        }
+
+        def singleLinkToJsValue(link: LinkObject): JsValue = link match {
+          case x: LinkUri => formatLink(x.uri, x.props)
+          case x: UriTpl => formatLink(x.tpl, x.props)
+          case x: UriString => formatLink(x.str, x.props)
+          case x: RelativeUri => r.baseUri match {
+            case Some(y: LinkUri) => formatLink(x.uri.withPath(y.uri.path ++ x.uri.path), x.props)
+            case _ => formatLink(x.uri, x.props)
+          }
+        }
+
+        List("_links" -> JsObject(
+          self ++ r.links.result.groupBy(_._1).foldLeft(List[(String, JsValue)]()) {
+            case (acc, (rel, List(lnk))) => rel -> singleLinkToJsValue(lnk._2) :: acc
+            case (acc, (rel, lnks)) => rel -> linksArrayToJsValue(rel, lnks.map(_._2)) :: acc
+          }))
+      }
 
       JsObject(ListMap.empty ++ r.resource.fields ++ embeds ++ links)
     }
