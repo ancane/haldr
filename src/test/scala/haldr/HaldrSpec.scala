@@ -236,6 +236,31 @@ class HaldrSpec extends Specification {
         """.parseJson
       }
 
+      "multiple links with same name" >> {
+        val customer =
+          Resource(
+            Customer("test@gmail.com"), u"/customers/deadbeaf")
+            .link("books", r"/books/1")
+            .link("books", r"/books/2")
+            .link("books", r"/books/3", r"/books/4")
+
+        customer.toJson must_==
+          """
+        {
+           "email": "test@gmail.com",
+           "_links": {
+              "self": {"href": "/customers/deadbeaf"},
+              "books": [
+                {"href": "/customers/deadbeaf/books/1"},
+                {"href": "/customers/deadbeaf/books/2"},
+                {"href": "/customers/deadbeaf/books/3"},
+                {"href": "/customers/deadbeaf/books/4"}
+              ]
+            }
+        }
+          """.parseJson
+      }
+
       "relative DRY links" >> {
         val customer =
           Resource(
