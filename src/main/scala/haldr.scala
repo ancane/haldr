@@ -1,7 +1,7 @@
-package object haldr extends HalJsonProtocol {
+import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.model.Uri.Path
 
-  import spray.http.Uri, Uri._
-  import uritemplate.URITemplate
+package object haldr extends HalJsonProtocol {
 
   implicit class UriInterpolators(val sc: StringContext) extends AnyVal {
     def u(args: Any*): LinkUri     = LinkUri(Uri.Empty.withPath(Path(sc.s(args: _*))))
@@ -9,7 +9,7 @@ package object haldr extends HalJsonProtocol {
     def t(args: Any*): UriTpl      = {
       val encArgs = args.map(x => (Path / x.toString).toString.tail)
       val src = sc.s(encArgs: _*)
-      URITemplate.parse(src).fold(sys.error, _ => UriTpl(src))
+      UriTpl(src)
     }
   }
 

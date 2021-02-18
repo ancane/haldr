@@ -1,11 +1,10 @@
 package haldr
 
+import akka.http.scaladsl.model.Uri
+import akka.http.scaladsl.model.Uri.{Path, Query}
 import spray.json._
-import spray.http.Uri, Uri._
-import scala.collection.immutable.ListMap
+
 import scala.collection.mutable.ListBuffer
-import DefaultJsonProtocol._
-import HalJsonProtocol._
 
 class Resource private[haldr] (
   private[haldr] val resource : JsObject,
@@ -81,23 +80,23 @@ private[haldr] sealed trait LinkObject {
     this
   }
 
-  def props = _props.result
+  def props = _props.result()
 }
 
 private[haldr] case class LinkUri(uri:Uri) extends LinkObject {
   def / (x: String)      = LinkUri(uri.withPath(path = uri.path / x))
   def / (x: Path)        = LinkUri(uri.withPath(path = uri.path ++ x))
   def / (x: RelativeUri) = LinkUri(uri.withPath(path = uri.path ++ x.uri.path))
-  def q (x: String)      = LinkUri(uri.withQuery(x))
-  def q (x: (String, String)) = LinkUri(uri.withQuery(x))
+  def q (x: String)      = LinkUri(uri.withQuery(Query(x)))
+  def q (x: (String, String)) = LinkUri(uri.withQuery(Query(x)))
 }
 
 private[haldr] case class RelativeUri(uri:Uri) extends LinkObject {
   def / (x: String)      = RelativeUri(uri.withPath(path = uri.path / x))
   def / (x: Path)        = RelativeUri(uri.withPath(path = uri.path ++ x))
   def / (x: RelativeUri) = RelativeUri(uri.withPath(path = uri.path ++ x.uri.path))
-  def q (x: String)      = RelativeUri(uri.withQuery(x))
-  def q (x: (String, String)) = RelativeUri(uri.withQuery(x))
+  def q (x: String)      = RelativeUri(uri.withQuery(Query(x)))
+  def q (x: (String, String)) = RelativeUri(uri.withQuery(Query(x)))
 }
 
 private[haldr] case class UriTpl(tpl:String) extends LinkObject
