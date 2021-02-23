@@ -1,12 +1,9 @@
 package haldr
 
+import akka.http.scaladsl.model.Uri.Path
 import org.specs2.mutable.Specification
-import org.specs2.matcher.DataTables
-import org.specs2.specification.Fragments
-import spray.http.Uri._
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
-import haldr._
 
 class HaldrSpec extends Specification {
 

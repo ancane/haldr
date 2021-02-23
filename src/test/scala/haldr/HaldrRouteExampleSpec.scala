@@ -1,22 +1,17 @@
 package haldr
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
+import akka.http.scaladsl.server.Directives.{complete, get, path}
+import akka.http.scaladsl.server.Route
+import akka.http.scaladsl.testkit.Specs2RouteTest
 import org.specs2.mutable.Specification
-import org.specs2.matcher.DataTables
-import org.specs2.specification.Fragments
-import org.specs2.mutable.Specification
-import spray.testkit.Specs2RouteTest
-
-import spray.routing.HttpService
-import spray.http.StatusCodes._
-
+import spray.json.DefaultJsonProtocol._
 import spray.json._
-import DefaultJsonProtocol._
-import spray.httpx.SprayJsonSupport._
+import akka.stream.ActorMaterializer
 
-import haldr._
+class HaldrRouteExampleSpec extends Specification with Specs2RouteTest {
 
-class HaldrRouteExampleSpec extends Specification with Specs2RouteTest with HttpService {
-  def actorRefFactory = system
+  implicit val actorMaterializer = ActorMaterializer()
 
   case class Car(make: String, model: String)
   implicit val carF = jsonFormat2(Car)
@@ -42,7 +37,7 @@ class HaldrRouteExampleSpec extends Specification with Specs2RouteTest with Http
 
   "route" should {
     "get car" in {
-      Get("/car") ~> sealRoute(route) ~> check {
+      Get("/car") ~> Route.seal(route) ~> check {
         responseAs[JsObject] === testCar
       }
     }

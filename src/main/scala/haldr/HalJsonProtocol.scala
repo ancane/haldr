@@ -1,9 +1,10 @@
 package haldr
 
 import spray.json._
-import spray.http.Uri, Uri._
+
 import scala.collection.immutable.ListMap
 import DefaultJsonProtocol._
+import akka.http.scaladsl.model.Uri
 
 private[haldr] object HalJsonProtocol extends HalJsonProtocol
 
@@ -20,7 +21,7 @@ private[haldr] trait HalJsonProtocol {
     def write(r: Resource): JsValue = {
       val embeds: ListMap[String, JsValue] = if (r.embeds.isEmpty) ListMap.empty
       else ListMap("_embedded" -> JsObject(
-        r.embeds.result.foldLeft(ListMap[String, JsValue]()){ case (acc, emb) => emb match {
+        r.embeds.result().foldLeft(ListMap[String, JsValue]()){ case (acc, emb) => emb match {
           case (rel, Right(obj))      => acc + (rel -> obj)
           case (rel, Left(Left(res))) => acc + (rel ->
               ((r.baseUri, res.baseUri) match {
@@ -62,7 +63,7 @@ private[haldr] trait HalJsonProtocol {
         }
 
         List("_links" -> JsObject(
-          self ++ r.links.result.groupBy(_._1).foldLeft(List[(String, JsValue)]()) {
+          self ++ r.links.result().groupBy(_._1).foldLeft(List[(String, JsValue)]()) {
             case (acc, (rel, List(lnk))) => rel -> singleLinkToJsValue(lnk._2) :: acc
             case (acc, (rel, lnks)) => rel -> linksArrayToJsValue(rel, lnks.map(_._2)) :: acc
           }))

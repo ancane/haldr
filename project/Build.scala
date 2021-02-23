@@ -1,10 +1,9 @@
-import sbt._
-import Keys._
-import xerial.sbt.Sonatype._
-import SonatypeKeys._
-import sbtrelease.ReleasePlugin._
-import ReleaseKeys._
 import com.typesafe.sbt.pgp.PgpKeys
+import sbt.Keys.{scalaVersion, _}
+import sbt._
+import sbtrelease.ReleasePlugin.ReleaseKeys._
+import sbtrelease.ReleasePlugin._
+import xerial.sbt.Sonatype._
 
 object ShellPrompt {
   def currentBranch = Process(List("git", "rev-parse", "--abbrev-ref", "HEAD"))
@@ -79,31 +78,35 @@ object Build extends Build {
     .settings(publishSettings: _*)
     .settings(net.virtualvoid.sbt.graph.Plugin.graphSettings: _*)
     .settings(
-    libraryDependencies ++= Seq(
-      uriTempl8,
-      sprayJson,
-      sprayHttp,
-      sprayRouting % "test",
-      sprayTestkit % "test",
-      specs2 % "test",
-      akka % "provided"
+      libraryDependencies ++= Seq(
+        sprayJson,
+        akkaHttp,
+        akkaHttpSprayJson,
+        akkaHttpTestKit,
+        akka % "provided",
+        akkaTestkit,
+        specs2Core,
+        akkaStream % Test
+      )
     )
-  )
 }
 
 object Deps {
   object V {
-    val scala = "2.11.6"
-    val spray = "1.3.3"
-    val crossScala = Seq("2.10.5", "2.11.6")
+    val scala = "2.13.4"
+    val crossScala = Seq("2.10.5", "2.11.6", "2.12.13", "2.13.4")
   }
 
-  val uriTempl8 = "no.arktekk"  %% "uri-template"   % "1.0.2"
-  val sprayJson = "io.spray"    %% "spray-json"     % "1.3.1"
+  private val akkaHttpVersion = "10.1.13"
+  private val akkaVersion = "2.5.32"
 
-  val sprayHttp = "io.spray"    %% "spray-http"     % V.spray
-  val sprayRouting = "io.spray" %% "spray-routing"  % V.spray
-  val sprayTestkit = "io.spray" %% "spray-testkit"  % V.spray
-  val akka      = "com.typesafe.akka" %% "akka-actor" % "2.3.9"
-  val specs2    = "org.specs2"  %% "specs2"         % "2.3.13"
+  val sprayJson = "io.spray" %% "spray-json" % "1.3.6"
+
+  val akkaHttp = "com.typesafe.akka" %% "akka-http" % akkaHttpVersion
+  val akkaHttpSprayJson = "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
+  val akkaHttpTestKit = "com.typesafe.akka" %% "akka-http-testkit" % akkaHttpVersion % Test
+  val akka = "com.typesafe.akka" %% "akka-actor" % akkaVersion
+  val akkaTestkit = "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test
+  val akkaStream = "com.typesafe.akka" %% "akka-stream" % akkaVersion
+  val specs2Core = "org.specs2" %% "specs2-core" % "4.10.6" % Test
 }
