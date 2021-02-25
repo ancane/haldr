@@ -23,7 +23,7 @@ object Build extends Build {
   lazy val basicSettings = Seq(
     organization := "com.github.ancane",
     name         := "haldr",
-    description  := "HAL builder for spray-json",
+    description  := "HAL builder for akka-http",
     scalaVersion := V.scala,
     crossScalaVersions := V.crossScala,
     scalacOptions := Seq(
@@ -94,7 +94,7 @@ object Build extends Build {
 object Deps {
   object V {
     val scala = "2.13.4"
-    val crossScala = Seq("2.10.5", "2.11.6", "2.12.13", "2.13.4")
+    val crossScala = Seq("2.11.6", "2.12.13", "2.13.4")
   }
 
   private val akkaHttpVersion = "10.1.13"
