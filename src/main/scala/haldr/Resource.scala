@@ -68,7 +68,7 @@ object Resource {
   def apply[T: JsonWriter](x: T, uri: LinkObject) = new Resource(x.toJson.asJsObject, Some(uri))
 }
 
-private[haldr] sealed trait LinkObject {
+sealed trait LinkObject {
   private [this] val _props = ListBuffer[(String, JsValue)]()
 
   def prop(p: String, value: String): LinkObject = {

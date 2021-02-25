@@ -67,11 +67,11 @@ class HaldrSpec extends Specification {
         }
         """.parseJson
 
-        Resource(r"/customers/deadbeaf"       q ("dead", "beaf")).toJson must_== expected
-        Resource(u"/customers" / r"/deadbeaf" q ("dead", "beaf")).toJson must_== expected
-        Resource(u"/customers" / "deadbeaf"   q ("dead", "beaf")).toJson must_== expected
-        Resource(r"/customers" / "deadbeaf"   q ("dead", "beaf")).toJson must_== expected
-        Resource(r"/customers" / r"/deadbeaf" q ("dead", "beaf")).toJson must_== expected
+        Resource(r"/customers/deadbeaf"       q ("dead" -> "beaf")).toJson must_== expected
+        Resource(u"/customers" / r"/deadbeaf" q ("dead" -> "beaf")).toJson must_== expected
+        Resource(u"/customers" / "deadbeaf"   q ("dead" -> "beaf")).toJson must_== expected
+        Resource(r"/customers" / "deadbeaf"   q ("dead" -> "beaf")).toJson must_== expected
+        Resource(r"/customers" / r"/deadbeaf" q ("dead" -> "beaf")).toJson must_== expected
       }
 
       "URIs query param encoding" >> {
@@ -83,7 +83,7 @@ class HaldrSpec extends Specification {
         }
         """.parseJson
 
-        Resource(r"/customers/deadbeaf" q ("dead", "be af")).toJson must_== expected
+        Resource(r"/customers/deadbeaf" q ("dead" -> "be af")).toJson must_== expected
       }
 
       "additional link properties" >> {
