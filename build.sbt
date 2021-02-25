@@ -1,6 +1,6 @@
 ThisBuild / organization := "com.github.ancane"
 ThisBuild / scalaVersion := "2.13.4"
-ThisBuild / version := "0.5"
+ThisBuild / version := "0.6-SNAPSHOT"
 
 val Deps = new {
   private val akkaHttpVersion = "10.1.13"
